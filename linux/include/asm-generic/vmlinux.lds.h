@@ -158,6 +158,7 @@
 	*(__rt_sched_class)			\
 	*(__fair_sched_class)			\
 	*(__ext_sched_class)			\
+	*(__oven_sched_class)			\
 	*(__idle_sched_class)			\
 	__sched_class_lowest = .;
 

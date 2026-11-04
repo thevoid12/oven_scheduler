@@ -70,6 +70,7 @@ struct io_uring_task;
 struct mempolicy;
 struct nameidata;
 struct nsproxy;
+struct sched_oven_entity;
 struct perf_event_context;
 struct perf_ctx_data;
 struct pid_namespace;

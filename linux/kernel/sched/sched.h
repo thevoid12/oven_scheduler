@@ -83,6 +83,7 @@
 struct rq;
 struct cfs_rq;
 struct rt_rq;
+struct oven_rq;
 struct sched_group;
 struct cpuidle_state;
 
@@ -189,6 +190,11 @@ extern struct list_head asym_cap_list;
 static inline int idle_policy(int policy)
 {
 	return policy == SCHED_IDLE;
+}
+
+static inline int oven_policy(int policy)
+{
+	return policy == SCHED_OVEN;
 }
 
 static inline int normal_policy(int policy)

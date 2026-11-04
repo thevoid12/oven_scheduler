@@ -49,6 +49,7 @@
 
 #include "idle.c"
 
+#include "oven.c"
 #include "rt.c"
 #include "cpudeadline.c"
 
