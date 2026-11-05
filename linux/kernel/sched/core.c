@@ -4423,6 +4423,11 @@ static void __sched_fork(u64 clone_flags, struct task_struct *p)
 	p->rt.on_rq		= 0;
 	p->rt.on_list		= 0;
 
+	INIT_LIST_HEAD(&p->ov.run_list);
+	p->ov.time_slice	= OVEN_TIMESLICE;
+	p->ov.weight		= OVEN_MAX_WEIGHT;
+	p->ov.on_rq		= 0;
+
 #ifdef CONFIG_SCHED_CLASS_EXT
 	init_scx_entity(&p->scx);
 #endif
@@ -8671,6 +8676,7 @@ void __init sched_init(void)
 		rq->calc_load_update = jiffies + LOAD_FREQ;
 		init_cfs_rq(&rq->cfs);
 		init_rt_rq(&rq->rt);
+		init_oven_rq(&rq->ov);
 		init_dl_rq(&rq->dl);
 #ifdef CONFIG_FAIR_GROUP_SCHED
 		INIT_LIST_HEAD(&rq->leaf_cfs_rq_list);

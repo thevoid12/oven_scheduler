@@ -868,6 +868,13 @@ static inline bool rt_rq_is_runnable(struct rt_rq *rt_rq)
 	return rt_rq->rt_queued && rt_rq->rt_nr_running;
 }
 
+/* Oven class' related fields in a runqueue */
+struct oven_rq {
+	struct list_head	queue;	
+	unsigned int		nr_running;
+};
+
+
 /* Deadline class' related fields in a runqueue */
 struct dl_rq {
 	/* runqueue is an rbtree, ordered by deadline */
@@ -1181,6 +1188,7 @@ struct rq {
 
 	struct cfs_rq		cfs;
 	struct rt_rq		rt;
+	struct ov_rq		ov;
 	struct dl_rq		dl;
 #ifdef CONFIG_SCHED_CLASS_EXT
 	struct scx_rq		scx;
@@ -3338,6 +3346,7 @@ print_numa_stats(struct seq_file *m, int node, unsigned long tsf,
 
 extern void init_cfs_rq(struct cfs_rq *cfs_rq);
 extern void init_rt_rq(struct rt_rq *rt_rq);
+extern void init_oven_rq(struct ov_rq *ov_rq);
 extern void init_dl_rq(struct dl_rq *dl_rq);
 
 extern void cfs_bandwidth_usage_inc(void);

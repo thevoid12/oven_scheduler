@@ -5,6 +5,11 @@
  */
 #include "sched.h"
 
+void init_oven_rq(struct oven_rq *oven_rq)
+{
+	INIT_LIST_HEAD(&oven_rq->queue);
+	oven_rq->nr_running = 0;
+}
 
 
 static void enqueue_task_oven(struct rq *rq, struct task_struct *p, int flags)

@@ -621,6 +621,16 @@ struct sched_entity {
 	struct sched_avg		avg;
 };
 
+#define OVEN_MAX_WEIGHT	10000	
+#define OVEN_TIMESLICE	1
+
+struct sched_oven_entity {
+	struct list_head	run_list;
+	unsigned int		time_slice;
+	unsigned int		weight;
+	unsigned short		on_rq;
+};
+
 struct sched_rt_entity {
 	struct list_head		run_list;
 	unsigned long			timeout;
@@ -871,6 +881,7 @@ struct task_struct {
 
 	struct sched_entity		se;
 	struct sched_rt_entity		rt;
+	struct sched_oven_entity 	ov;
 	struct sched_dl_entity		dl;
 	struct sched_dl_entity		*dl_server;
 #ifdef CONFIG_SCHED_CLASS_EXT
