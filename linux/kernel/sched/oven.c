@@ -12,18 +12,26 @@ static void enqueue_task_oven(struct rq *rq, struct task_struct *p, int flags)
     pr_info("initial boilerplate run for oven enqueue\n");
 }
 
-
+/*
+ * Called on every pass over the scheduling classes, whether or not oven has
+ * tasks. No oven runqueue yet, so there is never a task to pick: return NULL
+ * and let the scheduler fall through to the idle class.
+ */
+static struct task_struct *pick_task_oven(struct rq *rq, struct rq_flags *rf)
+{
+	return NULL;
+}
 
 /*
  * Simple, special scheduling class for oven tasks:
  */
 DEFINE_SCHED_CLASS(oven) = {
-    .enqueue_task = enqueue_task_oven
+	.enqueue_task		= enqueue_task_oven,
 	// .dequeue_task		= dequeue_task_oven,
 
 	// .wakeup_preempt		= wakeup_preempt_oven,
 
-	// .pick_task		= pick_task_oven,
+	.pick_task		= pick_task_oven,
 	// .put_prev_task		= put_prev_task_oven,
 	// .set_next_task          = set_next_task_oven,
 
