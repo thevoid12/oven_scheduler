@@ -5,17 +5,43 @@
  */
 #include "sched.h"
 
+void __setparam_oven(struct task_struct *p, const struct sched_attr *attr)
+{
+	p->ov.weight = attr->sched_priority;
+	pr_info("setparam oven %s (pid %d)\n", p->comm, p->pid);
+}
+
+
 void init_oven_rq(struct oven_rq *oven_rq)
 {
 	INIT_LIST_HEAD(&oven_rq->queue);
 	oven_rq->nr_running = 0;
+	pr_info("init oven rq %s (pid %d)\n", p->comm, p->pid);
+
 }
 
 
 static void enqueue_task_oven(struct rq *rq, struct task_struct *p, int flags)
 {
-    pr_info("initial boilerplate run for oven enqueue\n");
+    list_add_tail(&p->ov.run_list, &rq->ov.queue);
+	p->ov.on_rq = 1;
+	rq->ov.nr_running++;
+	add_nr_running(rq, 1);  /* this is needed for kernel wide count across all schedulers*/
+	pr_info("enqueue task oven %s (pid %d)\n", p->comm, p->pid);
+
 }
+
+static bool dequeue_task_oven(struct rq *rq, struct task_struct *p, int flags)
+{
+	list_del_init(&p->oven.run_list);
+	p->ov.on_rq = 0;
+	rq->ov.nr_running--;
+	sub_nr_running(rq, 1);
+	pr_info("dequeue task oven %s (pid %d)\n", p->comm, p->pid);
+
+	return true;
+}
+
 
 /*
  * Called on every pass over the scheduling classes, whether or not oven has
@@ -24,7 +50,11 @@ static void enqueue_task_oven(struct rq *rq, struct task_struct *p, int flags)
  */
 static struct task_struct *pick_task_oven(struct rq *rq, struct rq_flags *rf)
 {
+	if (list_empty(&rq->ov.queue))
 	return NULL;
+		pr_info("pick task oven\n");
+
+	return list_first_entry(&rq->ov.queue, struct task_struct, ov.run_list);
 }
 
 /*
@@ -32,7 +62,7 @@ static struct task_struct *pick_task_oven(struct rq *rq, struct rq_flags *rf)
  */
 DEFINE_SCHED_CLASS(oven) = {
 	.enqueue_task		= enqueue_task_oven,
-	// .dequeue_task		= dequeue_task_oven,
+	.dequeue_task		= dequeue_task_oven,
 
 	// .wakeup_preempt		= wakeup_preempt_oven,
 

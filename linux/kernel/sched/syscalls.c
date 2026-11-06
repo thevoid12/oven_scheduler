@@ -252,7 +252,8 @@ static void __setscheduler_params(struct task_struct *p,
 		__setparam_dl(p, attr);
 	else if (fair_policy(policy))
 		__setparam_fair(p, attr);
-
+	else if (oven_policy(policy))
+		__setparam_oven(p,attr);
 	/* rt-policy tasks do not have a timerslack */
 	if (rt_or_dl_task_policy(p)) {
 		p->timer_slack_ns = 0;
@@ -529,7 +530,7 @@ recheck:
 	if (attr->sched_priority > MAX_RT_PRIO-1)
 		return -EINVAL;
 	if ((dl_policy(policy) && !__checkparam_dl(attr)) ||
-	    (rt_policy(policy) != (attr->sched_priority != 0)))
+	    (rt_policy(policy) != (attr->sched_priority != 0) && !oven_policy(policy) ))
 		return -EINVAL;
 
 	if (user) {
@@ -1469,6 +1470,7 @@ SYSCALL_DEFINE1(sched_get_priority_max, int, policy)
 	case SCHED_RR:
 		ret = MAX_RT_PRIO-1;
 		break;
+	case SCHED_OVEN:
 	case SCHED_DEADLINE:
 	case SCHED_NORMAL:
 	case SCHED_BATCH:
@@ -1497,6 +1499,7 @@ SYSCALL_DEFINE1(sched_get_priority_min, int, policy)
 	case SCHED_RR:
 		ret = 1;
 		break;
+	case SCHED_OVEN:
 	case SCHED_DEADLINE:
 	case SCHED_NORMAL:
 	case SCHED_BATCH:

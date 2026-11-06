@@ -8676,6 +8676,7 @@ void __init sched_init(void)
 		rq->calc_load_update = jiffies + LOAD_FREQ;
 		init_cfs_rq(&rq->cfs);
 		init_rt_rq(&rq->rt);
+		/* for each cpu we need to initialize the scheduler scructure onits run queue*/
 		init_oven_rq(&rq->ov);
 		init_dl_rq(&rq->dl);
 #ifdef CONFIG_FAIR_GROUP_SCHED
