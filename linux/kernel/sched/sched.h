@@ -1188,7 +1188,7 @@ struct rq {
 
 	struct cfs_rq		cfs;
 	struct rt_rq		rt;
-	struct ov_rq		ov;
+	struct oven_rq		ov;
 	struct dl_rq		dl;
 #ifdef CONFIG_SCHED_CLASS_EXT
 	struct scx_rq		scx;
