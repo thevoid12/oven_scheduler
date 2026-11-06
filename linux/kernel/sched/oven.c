@@ -101,14 +101,12 @@ DEFINE_SCHED_CLASS(oven) = {
 	.put_prev_task		= put_prev_task_oven,
 	.set_next_task          = set_next_task_oven,
 
-	.balance		= balance_oven,
 	.select_task_rq		= select_task_rq_oven,
 	.set_cpus_allowed	= set_cpus_allowed_common,
 
 	.task_tick		= task_tick_oven,
 
 	.prio_changed		= prio_changed_oven,
-	.switching_to		= switching_to_oven,
 	.update_curr		= update_curr_oven,
 	.yield_task		= yield_task_oven,
 };
