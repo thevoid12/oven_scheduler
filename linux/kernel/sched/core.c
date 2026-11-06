@@ -7264,6 +7264,9 @@ const struct sched_class *__setscheduler_class(int policy, int prio)
 	if (rt_prio(prio))
 		return &rt_sched_class;
 
+	if (oven_policy(policy))
+		return &oven_sched_class;
+	
 #ifdef CONFIG_SCHED_CLASS_EXT
 	if (task_should_scx(policy))
 		return &ext_sched_class;
