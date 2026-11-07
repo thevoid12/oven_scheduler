@@ -31,6 +31,7 @@ static void enqueue_task_oven(struct rq *rq, struct task_struct *p, int flags)
 
 static bool dequeue_task_oven(struct rq *rq, struct task_struct *p, int flags)
 {
+	update_curr_rt(rq);
 	list_del_init(&p->ov.run_list);
 	p->ov.on_rq = 0;
 	rq->ov.nr_running--;
@@ -56,20 +57,20 @@ static struct task_struct *pick_task_oven(struct rq *rq, struct rq_flags *rf)
 
 static void set_next_task_oven(struct rq *rq, struct task_struct *next, bool first)
 {
+	p->se.exec_start = rq_clock_task(rq);
 }
 
 static void put_prev_task_oven(struct rq *rq, struct task_struct *prev,
 			       struct task_struct *next)
 {
+		update_curr_rt(rq);
 }
 
 static void task_tick_oven(struct rq *rq, struct task_struct *curr, int queued)
 {
+	update_curr_rt(rq);
 }
 
-static void update_curr_oven(struct rq *rq)
-{
-}
 
 static void wakeup_preempt_oven(struct rq *rq, struct task_struct *p, int flags)
 {
@@ -86,6 +87,17 @@ static int select_task_rq_oven(struct task_struct *p, int cpu, int flags)
 
 static void yield_task_oven(struct rq *rq)
 {
+}
+
+static void update_curr_oven(struct rq *rq)
+{
+	struct task_struct *donor = rq->donor;
+	s64 delta_exec;
+
+	if (donor->sched_class != &oven_sched_class)
+		return;
+
+	update_curr_common(rq);
 }
 
 /*
