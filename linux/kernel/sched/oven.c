@@ -18,6 +18,16 @@ void init_oven_rq(struct oven_rq *oven_rq)
 	oven_rq->nr_running = 0;
 }
 
+static void update_curr_oven(struct rq *rq)
+{
+	struct task_struct *donor = rq->donor;
+
+	if (donor->sched_class != &oven_sched_class)
+		return;
+
+	update_curr_common(rq);
+}
+
 
 static void enqueue_task_oven(struct rq *rq, struct task_struct *p, int flags)
 {
@@ -31,7 +41,7 @@ static void enqueue_task_oven(struct rq *rq, struct task_struct *p, int flags)
 
 static bool dequeue_task_oven(struct rq *rq, struct task_struct *p, int flags)
 {
-	update_curr_rt(rq);
+	update_curr_oven(rq);
 	list_del_init(&p->ov.run_list);
 	p->ov.on_rq = 0;
 	rq->ov.nr_running--;
@@ -42,11 +52,6 @@ static bool dequeue_task_oven(struct rq *rq, struct task_struct *p, int flags)
 }
 
 
-/*
- * Called on every pass over the scheduling classes, whether or not oven has
- * tasks. No oven runqueue yet, so there is never a task to pick: return NULL
- * and let the scheduler fall through to the idle class.
- */
 static struct task_struct *pick_task_oven(struct rq *rq, struct rq_flags *rf)
 {
 	if (list_empty(&rq->ov.queue))
@@ -55,7 +60,7 @@ static struct task_struct *pick_task_oven(struct rq *rq, struct rq_flags *rf)
 	return list_first_entry(&rq->ov.queue, struct task_struct, ov.run_list);
 }
 
-static void set_next_task_oven(struct rq *rq, struct task_struct *next, bool first)
+static void set_next_task_oven(struct rq *rq, struct task_struct *p, bool first)
 {
 	p->se.exec_start = rq_clock_task(rq);
 }
@@ -63,12 +68,7 @@ static void set_next_task_oven(struct rq *rq, struct task_struct *next, bool fir
 static void put_prev_task_oven(struct rq *rq, struct task_struct *prev,
 			       struct task_struct *next)
 {
-		update_curr_rt(rq);
-}
-
-static void task_tick_oven(struct rq *rq, struct task_struct *curr, int queued)
-{
-	update_curr_rt(rq);
+		update_curr_oven(rq);
 }
 
 
@@ -85,20 +85,53 @@ static int select_task_rq_oven(struct task_struct *p, int cpu, int flags)
 	return task_cpu(p);
 }
 
-static void yield_task_oven(struct rq *rq)
+
+static void requeue_task_oven(struct rq *rq, struct task_struct *p, int head)
 {
+	if (head)
+		list_move(&p->ov.run_list, &rq->ov.queue);
+	else
+		list_move_tail(&p->ov.run_list, &rq->ov.queue);
 }
 
-static void update_curr_oven(struct rq *rq)
+static void task_tick_oven(struct rq *rq, struct task_struct *p, int queued)
 {
-	struct task_struct *donor = rq->donor;
-	s64 delta_exec;
+	update_curr_oven(rq);
 
-	if (donor->sched_class != &oven_sched_class)
+	if (--p->ov.time_slice > 0)
 		return;
 
-	update_curr_common(rq);
+	p->ov.time_slice = OVEN_TIMESLICE;
+
+	if (!list_is_singular(&rq->ov.queue)) {
+		requeue_task_oven(rq, p, 0);
+		resched_curr(rq);
+	}
 }
+
+static unsigned int get_rr_interval_oven(struct rq *rq, struct task_struct *task)
+{
+	/*
+	 * Time slice is 0 for SCHED_FIFO tasks
+	 */
+	if (task->policy == SCHED_OVEN)
+		return OVEN_TIMESLICE;
+	else
+		return 0;
+}
+
+
+static void yield_task_oven(struct rq *rq)
+{
+	requeue_task_oven(rq, rq->donor, 0);
+}
+
+static void switched_to_oven(struct rq *rq, struct task_struct *p)
+{
+	if (task_on_rq_queued(p) && !task_current(rq, p))
+		resched_curr(rq);   /* let schedule() re-evaluate */
+}
+
 
 /*
  * Simple, special scheduling class for oven tasks:
@@ -121,5 +154,7 @@ DEFINE_SCHED_CLASS(oven) = {
 	.prio_changed		= prio_changed_oven,
 	.update_curr		= update_curr_oven,
 	.yield_task		= yield_task_oven,
+	.get_rr_interval 	= get_rr_interval_oven,
+	.switched_to		= switched_to_oven,
 };
 
