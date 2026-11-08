@@ -35,7 +35,7 @@ static void enqueue_task_oven(struct rq *rq, struct task_struct *p, int flags)
 	p->ov.on_rq = 1;
 	rq->ov.nr_running++;
 	add_nr_running(rq, 1);  /* this is needed for kernel wide count across all schedulers*/
-	pr_info("enqueue task oven %s (pid %d)\n", p->comm, p->pid);
+	/* pr_info("enqueue task oven %s (pid %d)\n", p->comm, p->pid); */
 
 }
 
@@ -46,7 +46,7 @@ static bool dequeue_task_oven(struct rq *rq, struct task_struct *p, int flags)
 	p->ov.on_rq = 0;
 	rq->ov.nr_running--;
 	sub_nr_running(rq, 1);
-	pr_info("dequeue task oven %s (pid %d)\n", p->comm, p->pid);
+	/*pr_info("dequeue task oven %s (pid %d)\n", p->comm, p->pid);*/
 
 	return true;
 }
