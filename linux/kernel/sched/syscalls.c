@@ -525,9 +525,9 @@ recheck:
 	/*
 	 * Valid priorities for SCHED_FIFO and SCHED_RR are
 	 * 1..MAX_RT_PRIO-1, valid priority for SCHED_NORMAL,
-	 * SCHED_BATCH and SCHED_IDLE is 0.
+	 * SCHED_BATCH and SCHED_IDLE is 0. this doesnt apply for oven scheduler
 	 */
-	if (attr->sched_priority > MAX_RT_PRIO-1)
+	if (!oven_policy(policy) && attr->sched_priority > MAX_RT_PRIO-1)
 		return -EINVAL;
 	if ((dl_policy(policy) && !__checkparam_dl(attr)) ||
 	    (rt_policy(policy) != (attr->sched_priority != 0) && !oven_policy(policy) ))
@@ -594,6 +594,11 @@ recheck:
 		     (attr->sched_runtime != p->se.slice)))
 			goto change;
 		if (rt_policy(policy) && attr->sched_priority != p->rt_priority)
+			goto change;
+		/* now because of round robin the same tick can call the same policy 
+		so this will help us to update the weight when multiple fibnochi runs 
+		with diff weight*/
+		if (oven_policy(policy) && oven_normalize_weight(attr->sched_priority) != p->ov.weight)
 			goto change;
 		if (dl_policy(policy) && dl_param_changed(p, attr))
 			goto change;

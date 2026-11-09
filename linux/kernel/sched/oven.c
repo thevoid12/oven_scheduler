@@ -7,8 +7,8 @@
 
 void __setparam_oven(struct task_struct *p, const struct sched_attr *attr)
 {
-	p->ov.weight = attr->sched_priority;
-	pr_info("setparam oven %s (pid %d)\n", p->comm, p->pid);
+	/* pr_info("setparam oven %s (pid %d)\n", p->comm, p->pid);*/
+	p->ov.weight = oven_normalize_weight(attr->sched_priority);
 }
 
 
@@ -28,15 +28,24 @@ static void update_curr_oven(struct rq *rq)
 	update_curr_common(rq);
 }
 
-
 static void enqueue_task_oven(struct rq *rq, struct task_struct *p, int flags)
 {
-    list_add_tail(&p->ov.run_list, &rq->ov.queue);
+	struct list_head *pos = &rq->ov.queue;
+	struct sched_oven_entity *e;
+
+	/* Sorted by weight for shortest job first
+	 equal weights stay first come, first served. */
+	list_for_each_entry(e, &rq->ov.queue, run_list) {
+		if (e->weight > p->ov.weight) {
+			pos = &e->run_list;
+			break;
+		}
+	}
+	list_add_tail(&p->ov.run_list, pos);
 	p->ov.on_rq = 1;
 	rq->ov.nr_running++;
 	add_nr_running(rq, 1);  /* this is needed for kernel wide count across all schedulers*/
 	/* pr_info("enqueue task oven %s (pid %d)\n", p->comm, p->pid); */
-
 }
 
 static bool dequeue_task_oven(struct rq *rq, struct task_struct *p, int flags)
@@ -74,6 +83,11 @@ static void put_prev_task_oven(struct rq *rq, struct task_struct *prev,
 
 static void wakeup_preempt_oven(struct rq *rq, struct task_struct *p, int flags)
 {
+	/* when a new task comes in and we see its weight lesser than
+	whats currently running on the run queue we just reschedule the rq
+	so that the new task with less weigt gets picked up*/
+	if (p->ov.weight < rq->donor->ov.weight)
+		resched_curr(rq);
 }
 
 static void prio_changed_oven(struct rq *rq, struct task_struct *p, u64 oldprio)
@@ -94,9 +108,15 @@ static void requeue_task_oven(struct rq *rq, struct task_struct *p, int head)
 		list_move_tail(&p->ov.run_list, &rq->ov.queue);
 }
 
+
 static void task_tick_oven(struct rq *rq, struct task_struct *p, int queued)
 {
 	update_curr_oven(rq);
+
+	/* Weighted tasks (shortest job first) are not time sliced. 
+	so it will keep running*/
+	if (p->ov.weight < OVEN_MAX_WEIGHT)
+		return;
 
 	if (--p->ov.time_slice > 0)
 		return;

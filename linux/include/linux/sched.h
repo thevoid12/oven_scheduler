@@ -622,7 +622,16 @@ struct sched_entity {
 };
 
 #define OVEN_MAX_WEIGHT	10000	
+#define OVEN_MIN_WEIGHT 2064 
 #define OVEN_TIMESLICE	1
+
+static inline unsigned int oven_normalize_weight(unsigned int w)
+{
+	if(w<OVEN_MIN_WEIGHT || w>OVEN_MAX_WEIGHT){
+		return OVEN_MAX_WEIGHT;
+	}
+	return w;
+}
 
 struct sched_oven_entity {
 	struct list_head	run_list;
