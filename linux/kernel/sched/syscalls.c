@@ -253,7 +253,7 @@ static void __setscheduler_params(struct task_struct *p,
 	else if (fair_policy(policy))
 		__setparam_fair(p, attr);
 	else if (oven_policy(policy))
-		__setparam_oven(p,attr);
+		__setparam_oven(p, attr);
 	/* rt-policy tasks do not have a timerslack */
 	if (rt_or_dl_task_policy(p)) {
 		p->timer_slack_ns = 0;
@@ -525,12 +525,12 @@ recheck:
 	/*
 	 * Valid priorities for SCHED_FIFO and SCHED_RR are
 	 * 1..MAX_RT_PRIO-1, valid priority for SCHED_NORMAL,
-	 * SCHED_BATCH and SCHED_IDLE is 0. this doesnt apply for oven scheduler
+	 * SCHED_BATCH and SCHED_IDLE is 0. This does not apply to the oven scheduler.
 	 */
 	if (!oven_policy(policy) && attr->sched_priority > MAX_RT_PRIO-1)
 		return -EINVAL;
 	if ((dl_policy(policy) && !__checkparam_dl(attr)) ||
-	    (rt_policy(policy) != (attr->sched_priority != 0) && !oven_policy(policy) ))
+	    (rt_policy(policy) != (attr->sched_priority != 0) && !oven_policy(policy)))
 		return -EINVAL;
 
 	if (user) {
@@ -595,10 +595,12 @@ recheck:
 			goto change;
 		if (rt_policy(policy) && attr->sched_priority != p->rt_priority)
 			goto change;
-		/* now because of round robin the same tick can call the same policy 
-		so this will help us to update the weight when multiple fibnochi runs 
-		with diff weight*/
-		if (oven_policy(policy) && oven_normalize_weight(attr->sched_priority) != p->ov.weight)
+		/*
+		 * Same policy but a different weight must still change
+		 * the task (each fibonacci sets its own weight).
+		 */
+		if (oven_policy(policy) &&
+		    oven_normalize_weight(attr->sched_priority) != p->ov.weight)
 			goto change;
 		if (dl_policy(policy) && dl_param_changed(p, attr))
 			goto change;

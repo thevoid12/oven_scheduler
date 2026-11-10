@@ -621,15 +621,14 @@ struct sched_entity {
 	struct sched_avg		avg;
 };
 
-#define OVEN_MAX_WEIGHT	10000	
-#define OVEN_MIN_WEIGHT 2064 
+#define OVEN_MAX_WEIGHT	10000
+#define OVEN_MIN_WEIGHT	2064
 #define OVEN_TIMESLICE	1
 
 static inline unsigned int oven_normalize_weight(unsigned int w)
 {
-	if(w<OVEN_MIN_WEIGHT || w>OVEN_MAX_WEIGHT){
+	if (w < OVEN_MIN_WEIGHT || w > OVEN_MAX_WEIGHT)
 		return OVEN_MAX_WEIGHT;
-	}
 	return w;
 }
 
@@ -890,7 +889,7 @@ struct task_struct {
 
 	struct sched_entity		se;
 	struct sched_rt_entity		rt;
-	struct sched_oven_entity 	ov;
+	struct sched_oven_entity	ov;
 	struct sched_dl_entity		dl;
 	struct sched_dl_entity		*dl_server;
 #ifdef CONFIG_SCHED_CLASS_EXT

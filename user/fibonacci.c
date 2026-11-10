@@ -18,11 +18,7 @@ int main(int argc, char **argv)
 	int ret;
 	unsigned long long n;
 
-	// ret = sched_setscheduler(0, 8, &params);
-	// if (ret) {
-	// 	fprintf(stderr, "OVEN scheduling policy does not exist\n");
-	// 	exit(1);
-	// }
+	/* ret = sched_setscheduler(0, 8, &params); disabled: tasks are launched by oven_launch */
 
 	if (argc != 2) {
 		fprintf(stderr, "Usage: ./fibonacci [number]\n");

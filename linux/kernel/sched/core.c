@@ -4676,8 +4676,8 @@ int sched_fork(u64 clone_flags, struct task_struct *p)
 
 	if (rt_prio(p->prio)) {
 		p->sched_class = &rt_sched_class;
-	}else if (oven_policy(p->policy)) {
-	p->sched_class = &oven_sched_class;
+	} else if (oven_policy(p->policy)) {
+		p->sched_class = &oven_sched_class;
 #ifdef CONFIG_SCHED_CLASS_EXT
 	} else if (task_should_scx(p->policy)) {
 		p->sched_class = &ext_sched_class;
@@ -7268,7 +7268,7 @@ const struct sched_class *__setscheduler_class(int policy, int prio)
 
 	if (oven_policy(policy))
 		return &oven_sched_class;
-	
+
 #ifdef CONFIG_SCHED_CLASS_EXT
 	if (task_should_scx(policy))
 		return &ext_sched_class;

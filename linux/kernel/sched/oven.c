@@ -33,8 +33,10 @@ static void enqueue_task_oven(struct rq *rq, struct task_struct *p, int flags)
 	struct list_head *pos = &rq->ov.queue;
 	struct sched_oven_entity *e;
 
-	/* Sorted by weight for shortest job first
-	 equal weights stay first come, first served. */
+	/*
+	 * Sorted by weight for shortest job first;
+	 * equal weights stay first come, first served.
+	 */
 	list_for_each_entry(e, &rq->ov.queue, run_list) {
 		if (e->weight > p->ov.weight) {
 			pos = &e->run_list;
@@ -64,7 +66,7 @@ static bool dequeue_task_oven(struct rq *rq, struct task_struct *p, int flags)
 static struct task_struct *pick_task_oven(struct rq *rq, struct rq_flags *rf)
 {
 	if (list_empty(&rq->ov.queue))
-	return NULL;
+		return NULL;
 
 	return list_first_entry(&rq->ov.queue, struct task_struct, ov.run_list);
 }
@@ -83,9 +85,10 @@ static void put_prev_task_oven(struct rq *rq, struct task_struct *prev,
 
 static void wakeup_preempt_oven(struct rq *rq, struct task_struct *p, int flags)
 {
-	/* when a new task comes in and we see its weight lesser than
-	whats currently running on the run queue we just reschedule the rq
-	so that the new task with less weigt gets picked up*/
+	/*
+	 * A new task with a smaller weight than the running one
+	 * preempts it, so the shortest job runs first.
+	 */
 	if (p->ov.weight < rq->donor->ov.weight)
 		resched_curr(rq);
 }
@@ -113,8 +116,10 @@ static void task_tick_oven(struct rq *rq, struct task_struct *p, int queued)
 {
 	update_curr_oven(rq);
 
-	/* Weighted tasks (shortest job first) are not time sliced. 
-	so it will keep running*/
+	/*
+	 * Weighted tasks (shortest job first) are not time sliced,
+	 * so they keep running.
+	 */
 	if (p->ov.weight < OVEN_MAX_WEIGHT)
 		return;
 
@@ -174,7 +179,7 @@ DEFINE_SCHED_CLASS(oven) = {
 	.prio_changed		= prio_changed_oven,
 	.update_curr		= update_curr_oven,
 	.yield_task		= yield_task_oven,
-	.get_rr_interval 	= get_rr_interval_oven,
+	.get_rr_interval	= get_rr_interval_oven,
 	.switched_to		= switched_to_oven,
 };
 

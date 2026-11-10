@@ -224,7 +224,7 @@ static inline int dl_policy(int policy)
 static inline bool valid_policy(int policy)
 {
 	return idle_policy(policy) || fair_policy(policy) ||
-		rt_policy(policy) || dl_policy(policy)|| oven_policy(policy);
+		rt_policy(policy) || dl_policy(policy) || oven_policy(policy);
 }
 
 static inline int task_has_idle_policy(struct task_struct *p)
@@ -870,7 +870,7 @@ static inline bool rt_rq_is_runnable(struct rt_rq *rt_rq)
 
 /* Oven class' related fields in a runqueue */
 struct oven_rq {
-	struct list_head	queue;	
+	struct list_head	queue;
 	unsigned int		nr_running;
 };
 
