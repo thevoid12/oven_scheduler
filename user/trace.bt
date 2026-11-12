@@ -1,0 +1,52 @@
+#ifndef BPFTRACE_HAVE_BTF
+#include <linux/sched.h>
+#else
+#define TASK_RUNNING 0
+#endif
+
+BEGIN
+{
+    printf("Tracing CPU scheduler... Hit Ctrl-C to end.\n");
+}
+
+tracepoint:sched:sched_wakeup,
+tracepoint:sched:sched_wakeup_new
+{
+    @qtime[args.pid] = nsecs;
+}
+
+tracepoint:sched:sched_switch
+{
+    if (args.prev_state == TASK_RUNNING) {
+        @qtime[args.prev_pid] = nsecs;
+    }
+
+    $ns = @qtime[args.next_pid];
+
+    if ($ns) {
+        @runq_total[args.next_pid] = (uint64)@runq_total[args.next_pid] + nsecs - (uint64)$ns;
+    }
+
+    delete(@qtime[args.next_pid]);
+}
+
+tracepoint:sched:sched_process_fork
+{
+    @start[args.child_pid] = nsecs;
+}
+
+tracepoint:sched:sched_process_exit
+{
+    $start = @start[args.pid];
+    $runq = @runq_total[args.pid];
+
+    if ($start && args.comm == "fibonacci") {
+        printf("%s,%d,%llu,%llu\n",
+            args.comm,
+            args.pid,
+            $runq / 1000000,
+            (nsecs - $start) / 1000000);
+        delete(@start[args.pid]);
+        delete(@runq_total[args.pid]);
+    }
+}
