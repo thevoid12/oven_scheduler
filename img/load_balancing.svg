@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1010" height="600" viewBox="0 0 1010 600"><defs><marker id="ah" markerUnits="userSpaceOnUse" markerWidth="14" markerHeight="14" refX="13" refY="7" orient="auto"><path d="M0,0 L14,7 L0,14 z" fill="#000"/></marker></defs><rect width="1010" height="600" fill="#fff"/><text x="505.0" y="40.0" font-size="22" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive" font-weight="bold">Oven idle load balancing (balance_oven)</text>
+<rect x="30" y="70" width="290" height="310" rx="6" fill="none" stroke="#000" stroke-width="2"/>
+<text x="42" y="98.0" font-size="18" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive" font-weight="bold">CPU 0   struct rq</text>
+<rect x="40" y="114" width="270" height="32" rx="6" fill="none" stroke="#000" stroke-width="1"/>
+<text x="50" y="134.0" font-size="13" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">dl_rq, rt_rq   (higher classes)</text>
+<rect x="40" y="156" width="270" height="150" rx="6" fill="none" stroke="#000" stroke-width="2"/>
+<text x="50" y="178.0" font-size="14" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive" font-weight="bold">oven_rq  (sorted by weight)</text>
+<rect x="50" y="196" width="58" height="58" rx="6" fill="none" stroke="#000" stroke-width="3"/>
+<text x="79.0" y="214.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">fib30</text>
+<text x="79.0" y="229.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">w2300</text>
+<text x="79.0" y="244.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">running</text>
+<rect x="114" y="196" width="58" height="58" rx="6" fill="none" stroke="#000" stroke-width="1"/>
+<text x="143.0" y="214.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">fib35</text>
+<text x="143.0" y="229.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">w2500</text>
+<rect x="178" y="196" width="58" height="58" rx="6" fill="none" stroke="#000" stroke-width="1"/>
+<text x="207.0" y="214.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">fib38</text>
+<text x="207.0" y="229.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">w2600</text>
+<rect x="242" y="196" width="58" height="58" rx="6" fill="none" stroke="#000" stroke-width="1"/>
+<text x="271.0" y="214.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">fib40</text>
+<text x="271.0" y="229.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">w2800</text>
+<text x="180" y="282.0" font-size="14" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">nr_running = 4</text>
+<rect x="40" y="316" width="270" height="32" rx="6" fill="none" stroke="#000" stroke-width="1"/>
+<text x="50" y="336.0" font-size="13" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">cfs_rq   (lower class)</text>
+<rect x="360" y="70" width="290" height="310" rx="6" fill="none" stroke="#000" stroke-width="2"/>
+<text x="372" y="98.0" font-size="18" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive" font-weight="bold">CPU 1   struct rq</text>
+<rect x="370" y="114" width="270" height="32" rx="6" fill="none" stroke="#000" stroke-width="1"/>
+<text x="380" y="134.0" font-size="13" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">dl_rq, rt_rq   (higher classes)</text>
+<rect x="370" y="156" width="270" height="150" rx="6" fill="none" stroke="#000" stroke-width="2"/>
+<text x="380" y="178.0" font-size="14" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive" font-weight="bold">oven_rq  (sorted by weight)</text>
+<rect x="380" y="196" width="58" height="58" rx="6" fill="none" stroke="#000" stroke-width="3"/>
+<text x="409.0" y="214.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">fib36</text>
+<text x="409.0" y="229.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">w2550</text>
+<text x="409.0" y="244.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">running</text>
+<rect x="444" y="196" width="58" height="58" rx="6" fill="none" stroke="#000" stroke-width="1"/>
+<text x="473.0" y="214.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">fib39</text>
+<text x="473.0" y="229.0" font-size="12" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">w2700</text>
+<text x="510" y="282.0" font-size="14" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">nr_running = 2</text>
+<rect x="370" y="316" width="270" height="32" rx="6" fill="none" stroke="#000" stroke-width="1"/>
+<text x="380" y="336.0" font-size="13" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">cfs_rq   (lower class)</text>
+<rect x="690" y="70" width="290" height="310" rx="6" fill="none" stroke="#000" stroke-width="2"/>
+<text x="702" y="98.0" font-size="18" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive" font-weight="bold">CPU 2   struct rq</text>
+<rect x="700" y="114" width="270" height="32" rx="6" fill="none" stroke="#000" stroke-width="1"/>
+<text x="710" y="134.0" font-size="13" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">dl_rq, rt_rq   (higher classes)</text>
+<rect x="700" y="156" width="270" height="150" rx="6" fill="none" stroke="#000" stroke-width="2"/>
+<text x="710" y="178.0" font-size="14" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive" font-weight="bold">oven_rq  (sorted by weight)</text>
+<rect x="710" y="196" width="58" height="58" rx="6" fill="none" stroke="#000" stroke-width="1" stroke-dasharray="6 5"/>
+<text x="809.0" y="227.0" font-size="13" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">empty -&gt; idle</text>
+<text x="840" y="282.0" font-size="14" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">nr_running = 0</text>
+<rect x="700" y="316" width="270" height="32" rx="6" fill="none" stroke="#000" stroke-width="1"/>
+<text x="710" y="336.0" font-size="13" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">cfs_rq   (lower class)</text>
+<polyline points="143.0,254 143.0,405 739.0,405 739.0,258" fill="none" stroke="#000" stroke-width="2" marker-end="url(#ah)"/>
+<text x="441.0" y="425.0" font-size="15" text-anchor="middle" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive" font-weight="bold">pull 1 task: shortest waiting job</text>
+<text x="30" y="465.0" font-size="15" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">1. CPU 2 has no oven tasks, so balance_oven() runs before picking the next task</text>
+<text x="30" y="483.8" font-size="15" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">2. find busiest CPU with &gt;= 2 oven tasks (lockless read)  -&gt;  CPU 0 (4 tasks)</text>
+<text x="30" y="502.5" font-size="15" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">3. double_lock_balance(CPU 2, CPU 0): fixed lock order, no deadlock; recheck both counts</text>
+<text x="30" y="521.2" font-size="15" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">4. skip the running task; take first task allowed on CPU 2  -&gt;  fib35 (lowest waiting weight)</text>
+<text x="30" y="540.0" font-size="15" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">5. move_queued_task_locked(): fib35 now runs on CPU 2</text>
+<text x="30" y="558.8" font-size="15" text-anchor="start" font-family="Virgil, 'Comic Sans MS', 'Segoe Print', cursive">Lower weight = shorter job = earlier in queue (SJF)</text></svg>
