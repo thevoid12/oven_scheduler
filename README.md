@@ -44,6 +44,3 @@ involuntary switches each, and all finish at 2.92 s.
 After boot, `systemd`, `kthreadd`, kworkers and RCU threads all run under
 policy 8. Only `migration/0` and `idle_inject/0` stay on FIFO (`FF`).
 
-## Credits
-
-See [CREDITS.md](CREDITS.md).
