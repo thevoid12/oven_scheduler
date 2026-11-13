@@ -46,7 +46,7 @@ policy 8. Only `migration/0` and `idle_inject/0` stay on FIFO (`FF`).
 
 
 ### Idle load balancing
-
+Load balancing is a key feature of the default Linux CFS scheduler. so oven scheduler also has the same load balancing feature because not all cpu processor will be busy all the time so if we can load balance and schedule our process and threads between different cpu processors then our scheduler would be even more faster.
 ![Oven idle load balancing](img/load_balancing.svg)
 
 A CPU with an empty `oven_rq` pulls one task from the busiest CPU that has
