@@ -159,6 +159,93 @@ static void switched_to_oven(struct rq *rq, struct task_struct *p)
 
 
 /*
+ * Idle balancing: pick the online CPU with the most oven tasks,
+ * as long as it has at least two. Lockless read, so it is only a hint;
+ * the count is checked again under the locks.
+ */
+static struct rq *find_busiest_oven_rq(struct rq *this_rq)
+{
+	struct rq *busiest = NULL;
+	unsigned int max = 1;
+	int cpu;
+
+	for_each_online_cpu(cpu) {
+		struct rq *src_rq = cpu_rq(cpu);
+		unsigned int nr = READ_ONCE(src_rq->ov.nr_running);
+
+		if (src_rq == this_rq)
+			continue;
+		if (nr > max) {
+			max = nr;
+			busiest = src_rq;
+		}
+	}
+	return busiest;
+}
+
+/*
+ * The queue is sorted by weight, so the first task that is not running,
+ * may move to this cpu and is not migration disabled is the shortest
+ * waiting job. Pulling it keeps shortest job first across cpus.
+ */
+static struct task_struct *pick_pullable_oven_task(struct rq *src_rq, int this_cpu)
+{
+	struct sched_oven_entity *e;
+
+	list_for_each_entry(e, &src_rq->ov.queue, run_list) {
+		struct task_struct *p = container_of(e, struct task_struct, ov);
+
+		if (p == src_rq->donor || is_migration_disabled(p))
+			continue;
+		if (task_is_pushable(src_rq, p, this_cpu))
+			return p;
+	}
+	return NULL;
+}
+
+/* Pull one oven task to this_rq, which has no oven tasks. */
+static void pull_oven_task(struct rq *this_rq)
+{
+	struct rq *src_rq = find_busiest_oven_rq(this_rq);
+	struct task_struct *p;
+
+	if (!src_rq)
+		return;
+
+	/*
+	 * double_lock_balance() takes both locks in a fixed order to avoid
+	 * deadlock, and may drop this_rq's lock to do so. Recheck both
+	 * counts after it returns.
+	 */
+	double_lock_balance(this_rq, src_rq);
+
+	if (this_rq->ov.nr_running == 0 && src_rq->ov.nr_running >= 2) {
+		p = pick_pullable_oven_task(src_rq, this_rq->cpu);
+		if (p)
+			move_queued_task_locked(src_rq, this_rq, p);
+	}
+
+	double_unlock_balance(this_rq, src_rq);
+}
+
+/*
+ * Called by prev_balance() in core.c before picking the next task.
+ * Returns true if a task of oven or higher class is runnable, which
+ * stops the balance pass of the lower classes.
+ */
+static int balance_oven(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+{
+	if (rq->ov.nr_running == 0) {
+		rq_unpin_lock(rq, rf);
+		pull_oven_task(rq);
+		rq_repin_lock(rq, rf);
+	}
+
+	return sched_stop_runnable(rq) || sched_dl_runnable(rq) ||
+	       sched_rt_runnable(rq) || rq->ov.nr_running > 0;
+}
+
+/*
  * Simple, special scheduling class for oven tasks:
  */
 DEFINE_SCHED_CLASS(oven) = {
@@ -171,6 +258,7 @@ DEFINE_SCHED_CLASS(oven) = {
 	.put_prev_task		= put_prev_task_oven,
 	.set_next_task          = set_next_task_oven,
 
+	.balance		= balance_oven,
 	.select_task_rq		= select_task_rq_oven,
 	.set_cpus_allowed	= set_cpus_allowed_common,
 

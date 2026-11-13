@@ -44,3 +44,13 @@ involuntary switches each, and all finish at 2.92 s.
 After boot, `systemd`, `kthreadd`, kworkers and RCU threads all run under
 policy 8. Only `migration/0` and `idle_inject/0` stay on FIFO (`FF`).
 
+
+### Idle load balancing
+
+![Oven idle load balancing](img/load_balancing.svg)
+
+A CPU with an empty `oven_rq` pulls one task from the busiest CPU that has
+at least 2 Oven tasks. It takes the shortest waiting job (lowest weight)
+and never the running one. Code: `balance_oven()` in
+`linux/kernel/sched/oven.c`. Editable source:
+[`img/load_balancing.excalidraw`](img/load_balancing.excalidraw).
